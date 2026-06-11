@@ -161,7 +161,19 @@ namespace Minesweeper
                     int ny = y + dy;
                     if (nx < 0 || nx >= mapSize || ny < 0 || ny >= mapSize) continue;
                     MineCell neighbour = board[nx, ny];
-                    if (!neighbour.IsFlagged && !neighbour.IsRevealed) RevealCell(nx, ny);
+                    if (!neighbour.IsFlagged && !neighbour.IsRevealed)
+                    {
+                        neighbour.IsRevealed = true;
+                        if (neighbour.Mine)
+                        {
+                            deathCount--;
+                            if (deathCount <= 0)
+                            {
+                                GameOver();
+                                return;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -362,7 +374,7 @@ namespace Minesweeper
                     Button button = buttons[x, y];
                     if (cell.IsRevealed)
                     {
-                        button.IsEnabled = false;
+                        button.Background = Brushes.White;
                         if (cell.Mine)
                         {
                             button.Content = "💣";
