@@ -18,7 +18,7 @@ When the program starts, it creates a new game field and randomly places mines o
 This version of Minesweeper includes a three-lives system.
 Normally in classic Minesweeper, one mistake can end the game immediately. In this project, the player has three chances. Every time the player opens a mine, one life is lost. The life counter is updated on the screen. Only when the player loses all three lives does the game finish completely.
 
-# Tools and technologies
+## Tools and technologies
 This project was created with the following tools and technologies: 
 * C#-used for the game logic and event handling, WPF- used for building the window and the graphical interface.
 * XAML - used to design the layout of the game window. 
