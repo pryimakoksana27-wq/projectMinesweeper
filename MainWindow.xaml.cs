@@ -11,6 +11,7 @@ using System.Windows.Threading;
 
 namespace Minesweeper
 {
+// Represents a single cell on the board
     public class MineCell
     {
         public bool Mine { get; set; }
@@ -19,6 +20,7 @@ namespace Minesweeper
         public int MinesAround { get; set; }
     }
     // game logic class
+    // creates a new game board with the selected size and mine count.
     public class GameBoard
     {
         private int mapSize;
@@ -50,7 +52,7 @@ namespace Minesweeper
                 }
             }
         }
-        public void InitGame()
+        public void InitGame()   // reset game state, creates empty board
         {
             gameOver = false;
             firstClick = true;
@@ -66,6 +68,7 @@ namespace Minesweeper
             }
         }
         // mines
+        // recreates the board, changes mine count and size of the board
         public void SetSizeAndMines(int mapSize, int mineCount)
         {
             this.mapSize = mapSize;
@@ -80,6 +83,7 @@ namespace Minesweeper
             }
 
         }
+       // first click is always safe, randomly placed mines at the board
         private void PlaceMines(int startX, int startY)
         {
             int placed = 0;
@@ -94,7 +98,7 @@ namespace Minesweeper
                 }
             }
         }
-        private int CountMinesAround(int x, int y)
+        private int CountMinesAround(int x, int y)  // calculates mine count for all cells on the board
         {
             int count = 0;
             for (int dx = -1; dx <= 1; dx++)
@@ -114,7 +118,7 @@ namespace Minesweeper
             }
             return count;
         }
-        private void AllMinesAround()
+        private void AllMinesAround()  // number of mines around
         {
             for (int x = 0; x < mapSize; x++)
             {
@@ -125,7 +129,7 @@ namespace Minesweeper
             }
         }
         // flags
-        private int AllFlagsAround(int x, int y)
+        private int AllFlagsAround(int x, int y)   //counts flags around given cell
         {
             int count = 0;
             for (int dx = -1; dx <= 1; dx++)
@@ -145,6 +149,7 @@ namespace Minesweeper
             }
             return count;
         }
+        // if the correct number of flags has been placed around a revealed cell it opens all neighbouring cells
         public void OpenNeighbours(int x, int y)
         {
             if (gameOver) return;
@@ -178,6 +183,7 @@ namespace Minesweeper
             }
         }
         // logic of opening cell
+          // Reveas the selected cell and expands empty areas
         public void RevealCell(int x, int y)
         {
             if (gameOver) return;
@@ -231,7 +237,7 @@ namespace Minesweeper
             }
             CheckWin();
         }
-        public void FlagCell(int x, int y)
+        public void FlagCell(int x, int y)  // place or remove flag on the cell
         {
             if (gameOver) return;
             MineCell cell = board[x, y];
@@ -262,12 +268,12 @@ namespace Minesweeper
             }
             WinGame();
         }
-        private void WinGame()
+        private void WinGame()   // mark the game as won
         {
             gameOver = true;
             isWon = true;
         }
-        private void GameOver()
+        private void GameOver()   // end the game after player loses all lives
         {
             gameOver = true;
             isWon = false;
@@ -288,13 +294,13 @@ namespace Minesweeper
             InitTimer();
             InitGame();
         }
-        private void InitTimer()
+        private void InitTimer()  // initialize timer 
         {
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += TimerTick;
         }
-        private void TimerTick(object? sender, EventArgs e)
+        private void TimerTick(object? sender, EventArgs e) //updates timer
         {
             seconds++;
             timerText.Text = "Time: " + seconds;
@@ -322,7 +328,7 @@ namespace Minesweeper
             Resize();
             RenderBoard();
         }
-        private Button CreateCell(int x, int y)
+        private Button CreateCell(int x, int y)  // creates a visual button representing a board cell
         {
             Button button = new Button();
             button.Tag = new Point(x, y);
@@ -338,7 +344,7 @@ namespace Minesweeper
             button.FocusVisualStyle = null;
             return button;
         }
-        private void CellClick(object sender, RoutedEventArgs e)
+        private void CellClick(object sender, RoutedEventArgs e)   // click on cell using left mouse button
         {
             if (gameBoard == null) return;
             bool wasFirstClick = gameBoard.FirstClick;
@@ -351,7 +357,7 @@ namespace Minesweeper
             if (wasFirstClick) timer?.Start();
             RenderBoard();
         }
-        private void FlagCell(object sender, RoutedEventArgs e)
+        private void FlagCell(object sender, RoutedEventArgs e)  // place flag on the cell using mouse right button
         {
             if (gameBoard == null) return;
             Button button = (Button)sender;
@@ -362,6 +368,7 @@ namespace Minesweeper
             RenderBoard();
             e.Handled = true;
         }
+        // updates the visual representation of the board
         private void RenderBoard()
         {
             if (buttons == null || gameBoard == null) return;
@@ -403,13 +410,13 @@ namespace Minesweeper
             }
         }
 
-        private void UpdateMines()
+        private void UpdateMines()   //updates the remaining flag counter
         {
             if (gameBoard == null) return;
             int left = mineCount - gameBoard.PlaceFlags;
             minesLeftText.Text = "Flags left: " + left;
         }
-        private void UpdateLives()
+        private void UpdateLives()   // update lives counter
         {
             if (gameBoard == null) return;
             livesText.Text = "Lives: " + gameBoard.DeathCount;
@@ -429,34 +436,34 @@ namespace Minesweeper
                 default: return Brushes.Black;
             }
         }
-        private void EasyClick(object sender, RoutedEventArgs e)
+        private void EasyClick(object sender, RoutedEventArgs e)   // easy levell
         {
             mapSize = 10;
             mineCount = 10;
             InitGame();
         }
-        private void MediumClick(object sender, RoutedEventArgs e)
+        private void MediumClick(object sender, RoutedEventArgs e) // medium level
         {
             mapSize = 12;
             mineCount = 25;
             InitGame();
         }
-        private void HardClick(object sender, RoutedEventArgs e)
+        private void HardClick(object sender, RoutedEventArgs e) //hard level
         {
             mapSize = 16;
             mineCount = 50;
             InitGame();
         }
-        private void RestartClick(object sender, RoutedEventArgs e)
+        private void RestartClick(object sender, RoutedEventArgs e)   //button to restart game
         {
             InitGame();
         }
-        private void Resize()
+        private void Resize()   //resizes the window according to the board dimensions
         {
             this.Width = Math.Max(600, mapSize * 32 + 60);
             this.Height = Math.Max(600, mapSize * 32 + 180);
         }
-        private void ShowExplosion()
+        private void ShowExplosion()   // displays the game over explosion
             {
                 Window explosion = new Window
                 {
